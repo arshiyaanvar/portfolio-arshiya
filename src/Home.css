@@ -1,0 +1,17 @@
+#home {
+    background-color: #d29fdb; /* Dark background */
+    text-align: center;
+    padding: 40px;
+    border-radius: 8px;
+  }
+  
+  #home h2 {
+    font-size: 30px;
+    color: #6a1b9a; /* Purple for heading */
+  }
+  
+  #home p {
+    font-size: 18px;
+    color: #000; /* Light gray for text */
+  }
+  

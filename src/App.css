@@ -1,0 +1,110 @@
+/* Global Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff; /* White background */
+  color: #121212; /* Dark text color */
+}
+
+h1, h2 {
+  color: #ffffff; /* Purple color for all titles */
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+/* Header Styles */
+header {
+  background-color: #af92b6; /* Purple color */
+  color: white;
+  padding: 20px;
+  text-align: center;
+  
+  box-shadow: 0 4px 2px -2px gray;
+}
+
+header h1 {
+  font-size: 32px;
+  margin: 0;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+nav ul li {
+  display: inline;
+  margin-right: 20px;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav ul li a:hover {
+  color: #d1c4e9; /* Lighter purple for hover */
+}
+
+/* Section Styles */
+section {
+  padding: 20px;
+  margin: 10px;
+  background-color: #f4f4f4; /* Light gray for sections */
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+section h2 {
+  font-size: 28px;
+  color: #6a1b9a; /* Purple color */
+  border-bottom: 2px solid #6a1b9a;
+  padding-bottom: 10px;
+}
+
+/* Projects List */
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+ul li {
+  margin: 10px 0;
+  font-size: 18px;
+  color: #121212; /* Dark color for text */
+}
+
+/* Contact Form */
+form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+form input, form textarea {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #6a1b9a; /* Purple border */
+  border-radius: 4px;
+  background-color: #f4f4f4; /* Light gray background for form fields */
+  color: #121212; /* Dark text inside form */
+}
+
+form button {
+  padding: 10px;
+  background-color: #6a1b9a; /* Purple background */
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+form button:hover {
+  background-color: #d1c4e9; /* Lighter purple for hover */
+}

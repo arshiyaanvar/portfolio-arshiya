@@ -1,0 +1,17 @@
+#about {
+    background-color: #d29fdb; /* Lighter purple background */
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  #about h2 {
+    color: #6a1b9a; /* Purple color */
+    /* Purple color */
+  }
+  
+  #about p {
+    font-size: 18px;
+    color: #000; /* Light gray for text */
+  }
+  
