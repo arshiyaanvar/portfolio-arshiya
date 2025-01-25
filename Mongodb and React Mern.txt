@@ -1,0 +1,442 @@
+show dbs
+use stu
+db.students.insertOne({name:'Ram',roll:17})
+db.students.find()
+db.students.insertMany([{name:'Madhu',roll:1},{name:'Arshi',roll:2},{name:'Shwetha',roll:3},{name:'Ravi',roll:4}])
+
+stu>db.students.find().toArray()
+stu>db.students.find().forEach((d)=>print('the data is',d))
+
+
+=============================================================================================================
+To Connect Mongo db:
+
+create a folder => go to the path=> type cmd -creates n mongodb
+after that in mongodb type => code .   which => opens vscode
+ 
+then in vs code :
+npm i --s express express-handlebars body-parser 
+
+npm i -g nodemon 
+=> to prevent restart mannualy
+
+``````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+1.express
+
+purpose: express is a fast ,minimalist web framework for Node.js.It provides tools to build web applications and APIs.
+  usage:
+           to handle HTTP requests and responses
+           to create routes for different endpoints(e.g., GET,POST,PUT,DELETE)
+           to integrate middleware for processing requests.
+
+```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+2.express-handlebars
+
+purpose: This package is an Express.js template engine for rendering dynamic HTML pages using Handlebars syntax.
+ usage:
+          to serve dynamic content by combining HTML templates with JavaScript data.
+         to create reusable components like headers,footers,etc., using Handlebars partials
+
+```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+3. body-parser
+ purpose: body-parser is a middleware that parses incoming request bodies in a middleware before your handlers,making 
+
+
+
+
+===================================================================================================================
+
+Folder-viewsfold
+=>maincopy.hbs
+app.js
+===================================================================================================================
+
+
+
+code for maincopy.hbs:
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>MONGODB CRUD</title>
+    </head>
+
+    <body>
+    <h1>MONGO CRUD</h1>
+    <p>{{msg}}</p>
+    </body>
+    
+</html>
+
+===================================================================================================================
+CODE FOR app.js:
+
+const  express=require('express');
+const exhbs=require('express-handlebars');
+const app=express();
+app.engine('hbs',
+    exhbs.engine({
+        layoutsDir:'viewsfold/',
+        defaultLayout:'maincopy',
+        extname:'hbs',
+    })
+);
+app.set('view engine','hbs')
+app.set('views','viewsfold');
+
+//Routes
+app.get('/',(req,res)=> {
+    const msg = 'test';
+    res.render('maincopy', {msg});
+});
+// start the server
+app.listen(8000, () => {
+    console.log('Listening on port 8000...');
+});
+
+TERMINAL CODES TO RUN:
+
+npm i --s express express-handlebars body-parser 
+npm i -g nodemon
+
+nodemon appcopy.js
+
+====================================================================================================
+TO CONNECT MONGODB AND NODEJS:
+
+npm i mongodb => install mongodb driver
+
+
+=====================================================================================================
+FOR MONGODB AND NODE JS CONNECTION VScodes
+
+Folder=> viewsfold
+-maincopy.hbs
+app.js
+db.js
+
+========================================================================================
+
+CODE FOR maincopy.hbs:
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>MONGODB CRUD</title>
+    </head>
+    <body>
+        <h1>MONGODB CRUD</h1>
+        <ul>
+            {{#each datas}}
+            <li>{{this.name}} {{this.roll}}</li>
+            {{/each}}
+        </ul>
+        <p>{{msg}}</p>
+    </body>
+</html>
+
+=======================================================================================
+CODE FOR app.js:
+
+const  express=require('express');
+const exhbs=require('express-handlebars');
+const app=express();
+const dbo=require('./db')
+app.engine('hbs',
+    exhbs.engine({
+        layoutsDir:'viewsfold/',
+        defaultLayout:'maincopy',
+        extname:'hbs',
+    })
+);
+app.set('view engine','hbs')
+app.set('views','viewsfold');
+//Routes
+app.get('/',async (req,res)=>{
+    let database= await dbo.getDatabase();
+    const collection=database.collection('emp');
+    const cursur=collection.find({});
+    let datas=await cursur.toArray()
+    const msg='Hello';
+    console.log('the data',datas);
+    res.render('maincopy',{msg,datas});
+});
+
+app.listen(8000,()=>{
+    console.log('Listening on port 8000.....');
+});
+
+=======================================================================================
+CODE FOR db.js:
+
+const mongodb=require ('mongodb');
+const mongoClient=mongodb.MongoClient;
+let database;
+async function getDatabase(){
+    const client= await mongoClient.connect('mongodb://127.0.0.1:27017');
+    database=client.db('t1');
+    if(!database){
+        console.log('Database connected successfully');
+    }
+    else{
+        console.log('Database connection failed:');}
+    return database;
+}
+module.exports={getDatabase};
+
+=======================================================================================
+
+CODE FOR app.js:
+
+const  express=require('express');
+const exhbs=require('express-handlebars');
+const app=express();
+const dbo=require('./db')
+const bodyParser = require('body-parser');
+app.engine('hbs',
+    exhbs.engine({
+        layoutsDir:'viewsfold/',
+        defaultLayout:'maincopy',
+        extname:'hbs',
+    })
+);
+app.set('view engine','hbs')
+app.set('views','viewsfold');
+app.use(bodyParser.urlencoded({ extended: true}));
+//Routes
+app.get('/',async (req,res)=>{
+    let database= await dbo.getDatabase();
+    const collection=database.collection('emp');
+    const cursur=collection.find({});
+    let datas=await cursur.toArray()
+   let msg='';
+    if(req.query.status==='1')
+        msg='The value has been Inserted Sucessfully.........'
+   
+    console.log('the data',datas);
+    res.render('maincopy',{msg,datas});
+});
+app.post('/empinfo',async(req,res)=> {
+    const database = await dbo.getDatabase();
+    const collection = database.collection('emp');
+    const employee ={roll: req.body.sroll,  name: req.body.sname };
+    await collection.insertOne(employee);
+    res.redirect('/?status=1');
+
+})
+
+app.listen(7000,()=>{
+    console.log('Listening on port 7000.....');
+});
+
+============================================================================
+
+CODE FOR maincopy.hbs:
+
+<!DOCTYPE html>
+<html lang = "en">
+    <head>
+        <title>MONGODB CRUD</title>
+    </head>
+    <body>
+        <h1>MONGODB CRUD EXAMPLE</h1>
+        <h2>Create form</h2>
+        <form action = "/empinfo"method = "POST">
+        <label for="">Roll</label>
+        <input type="text" name ="sroll">
+        <label for="">NAME</label>
+        <input type="text" name = "sname">
+        <input type="submit">
+        </form>
+        <ul>
+            {{#each datas}}
+            <li>{{this.roll}} {{this.name}} </li>
+            {{/each}}
+        </ul>
+        <p>{{msg}}</p>
+    </body>
+</html>
+
+=======================================================================
+
+CODE FOR db.js:
+
+const mongodb=require ('mongodb');
+const mongoClient=mongodb.MongoClient;
+let database;
+async function getDatabase(){
+    const client= await mongoClient.connect('mongodb://127.0.0.1:27017');
+    database=client.db('t1');
+    if(!database){
+        console.log('Database connected successfully');
+    }
+    else{
+        console.log('Database connection failed:');}
+    return database;
+}
+module.exports={getDatabase};
+
+
+
+
+db.products.insertMany([ {  "name": "Item A", "price": 50 },{  "name": "Item B", "price": 75 },{  "name": "Item C", "price": 100 },{  "name": "Item D", "price": 150 },{   "name": "Item E", "price": 200 }])
+
+
+
+
+db.employee.find({})
+
+=========================================================================================================================================
+
+Final code for Mongo and VScode
+
+
+Code for app.js:
+
+
+
+const  express=require('express');
+const exhbs=require('express-handlebars');
+const app=express();
+const dbo=require('./db')
+const objid=dbo.objectId
+const bodyParser = require('body-parser');
+app.engine('hbs',
+    exhbs.engine({
+        layoutsDir:'viewsfold/',
+        defaultLayout:'maincopy',
+        extname:'hbs',
+    })
+);
+app.set('view engine','hbs')
+app.set('views','viewsfold');
+app.use(bodyParser.urlencoded({ extended: true}));
+//Routes
+app.get('/',async (req,res)=>{
+    let edit_id,edit_emp;
+    let database= await dbo.getDatabase();
+    const collection=database.collection('emp');
+    const cursur=collection.find({});
+    let datas=await cursur.toArray()
+   let msg='';
+   if(req.query.edit_idd){
+    edit_id = req.query.edit_idd
+    edit_emp = await collection.findOne({_id: new objid(edit_id)})
+}
+if(req.query.delete_idd){
+    delete_id = req.query.delete_idd
+    console.log('Delete request for _id:', delete_id);
+    await collection.deleteOne({_id: new objid(delete_id)})
+    res.redirect('/?status=3');
+  }
+
+  if(req.query.status==='1'){
+     msg="Inserted Successfully"
+  }
+  if(req.query.status==='2'){
+      msg="Updated Successfully"
+   }
+   if(req.query.status==='3'){
+      msg="deleted Successfully"
+   }
+   
+    res.render('maincopy',{msg,datas,edit_id,edit_emp});
+});
+app.post('/empinfo',async(req,res)=> {
+    const database = await dbo.getDatabase();
+    const collection = database.collection('emp');
+    const employee ={roll: req.body.eroll,  name: req.body.ename };
+    await collection.insertOne(employee);
+    res.redirect('/?status=1');
+
+})
+app.post('/updateinfo/:e_id',async(req,res)=> {
+    const database = await dbo.getDatabase();
+    const collection = database.collection('emp');
+    const employee ={roll: req.body.eroll,  name: req.body.ename };
+    let ed_idd=req.params.e_id
+    await collection.updateOne({_id:new objid(ed_idd
+
+    )},{$set:employee});
+    res.redirect('/?status=2');
+
+})
+
+app.listen(7000,()=>{
+    console.log('Listening on port 7000.....');
+});
+
+
+
+============================================================================
+Code for db.js:
+
+const mongodb=require ('mongodb');
+const mongoClient=mongodb.MongoClient;
+let database;
+let objectId=mongodb.ObjectId;
+async function getDatabase(){
+    const client= await mongoClient.connect('mongodb://127.0.0.1:27017');
+    database=client.db('t1');
+    if(!database){ 
+        console.log('Database connected successfully');
+    }
+    else{
+        console.log('Database connection failed:');}
+    return database;
+}
+module.exports={getDatabase,objectId};
+
+============================================================================
+
+Code for maincopy.hbs:
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>MONGODB CRUD</title>
+    </head>
+    <body>
+        <h1>MONGODB CRUD</h1>
+        {{#if edit_id}}
+        <h3>Edit form</h3>
+        <form action="/updateinfo/{{edit_id}}" method ="post">
+        <form action = "/empinfo"method = "POST">
+
+        <label for="">roll</label>
+        <input type="text" name="eroll" value="{{edit_emp.roll}}">
+        <label for=""> Name </label>
+        <input type="text" name="ename" value="{{edit_emp.name}}">
+        <input type ="submit">
+        </form><br><br>
+        {{else}}
+        <h3>Form Creation</h3>
+        <form action="/empinfo" method="POST">
+        <label for="">roll</label>
+        <input type="text" name="eroll">
+        <label for=""> Name </label>
+        <input type="text" name="ename">
+        <input type ="submit">
+        </form><br><br>
+        <br><br>
+        {{/if}}
+        <ul>
+            {{#each datas}}
+            <li>{{this.roll}} {{this.name}}<a href="/?edit_idd={{this._id}}">Edit</a>
+           <a href="/?delete_idd={{this._id}}" onclick="return confirm('do you want to delete')">Delete</a>
+            </li>
+            {{/each}}
+        </ul>
+        <p>{{msg}}</p>
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
